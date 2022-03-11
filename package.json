@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Starting the project api",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Equipo2IesEsteveTerradas/API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Equipo2IesEsteveTerradas/API/issues"
+  },
+  "homepage": "https://github.com/Equipo2IesEsteveTerradas/API#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
