@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 
 //Data parsing
-app.use(experess.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/test', function(req, res){
