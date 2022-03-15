@@ -1,4 +1,5 @@
 const express = require('express');
+const PORT = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -33,7 +34,7 @@ const dbConnection = async() => {
 
 dbConnection();
 
-app.listen(3000, () => {
-    console.log(`Servidor corriendo en el puerto ${3000}`);
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
