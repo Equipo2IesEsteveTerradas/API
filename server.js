@@ -1,33 +1,39 @@
-// import npm packages
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
-const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.DATABSE_URL || 'mongodb://localhost/3000';
-const client = new MongoClient(uri);
-const dbName = 'classVRroom';
+require('dotenv').config();
 
+
+// Crear el servidor express
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-
-
-
-//Data parsing
+// Lectua y parseo del body
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.get('/test', function(req, res){
-    MongoClient.connect(url, async function(err, db) {
-        if (err) throw err;
-        var dbo = db.db(dbName);
-        console.log(req.url)
-        var result = await dbo.collection('courses').find({}).toArray();
-            console.log(result);
-            res.json(result);
-        
-        db.close();
-    });
+//GET
+app.get('/', (req,res) => {
+    res.status(200).json({
+        ok: true,
+        mensaje: 'Petición realizada correctamente',
+        uid: 666
+    })
 });
 
-app.listen(PORT, console.log(`Server is starting at ${PORT}`));
+const dbConnection = async() => {
+    try{
+        await mongoose.connect(process.env.DATABASE_URL,{
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+        console.log('Base de datos conectada');
+    } catch ( err ) {
+        console.log(err);
+        throw new Error('Error al conectar con la base de datos');
+    }
+}
+
+dbConnection();
+
+app.listen(3000, () => {
+    console.log(`Servidor corriendo en el puerto ${3000}`);
+});
+
