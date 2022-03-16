@@ -1,11 +1,10 @@
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const mongoose = require('mongoose');
-const conn = require('./database');
-const courseModel = require('./models/course');
 require('dotenv').config();
-
-
+const db = require('./database');
+const CourseModel = require('./models/course');
+const UserModel = require('./models/user');
 
 
 // Crear el servidor express
@@ -17,11 +16,32 @@ app.use(express.json());
 //GET
 app.get('/', (req,res) => {
     res.status(200).json({
+        status: 'OK',
         ok: true,
         mensaje: 'Petición realizada correctamente',
         uid: 666
     })
 });
+
+app.get('/api/login',(req,res) => {
+    
+    let username=req.query.username
+    let password=req.query.password
+    console.log(req.query.username)
+    UserModel.findOne({name: username}, function(err, user){
+        if (err) {
+            console.log('Error')
+            res.status(404).json({
+                status: 'ERROR EN LA PETICIÓN',
+            })
+        } else if (!user){
+            console.log('usuario no encontrado')
+            res.status(200).json({
+                status: 'ERROR user not found'
+            })
+        } else {console.log(user)} 
+    })   
+})
 
 const dbConnection = async() => {
     try{
@@ -34,32 +54,9 @@ const dbConnection = async() => {
         console.log(err);
         throw new Error('Error al conectar con la base de datos');
     }
-    
 }
 
-// test connection w/ mongo atlas
 dbConnection();
-
-
-
-app.get('/get_courses', async (req, res) => {
-    await courseModel.find({}, (err, courses) => {
-        if(err) throw err;
-        res.status(200).json({
-            ok: true,
-            courses: courses
-        })
-    })
-    
-});
-
-app.get('/get_courses2', async (req, res) => {
-    const doc = await courseModel.find({}).exec();
-    
-    console.log(res.json(doc));  
-});
-
-
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
