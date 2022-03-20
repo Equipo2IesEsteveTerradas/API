@@ -98,7 +98,7 @@ app.get('/api/logout', (req, res)=>{
         } else if(!session_token){
             res.status(200).json({
                 status: "OK",
-                message: 'token no encontrado',
+                message: 'no existe token de sesion',
                 session_token: null
             })
         }else if(user){
@@ -117,16 +117,40 @@ app.get('/api/logout', (req, res)=>{
                 message: 'usuario no encontrado',
                 session_token: null
             })
+        }
+    })
+});
+
+// ---------------ENDPOINT GET_COURSES----------------
+app.get('/api/get_courses', (req, res)=>{
+    UserModel.findOne({token: session_token}, async(err, user)=>{
+        if(err){
+            console.log('Error')
+            res.status(404).json({
+                status: 'ERROR',
+                message: 'Error en la petición'
+            })
         } else if(!session_token){
             res.status(200).json({
                 status: "OK",
                 message: 'no existe token de sesion',
                 session_token: null
             })
+        }else if(!user){
+            res.status(200).json({
+                status: "OK",
+                message: 'usuario no encontrado',
+                session_token: null
+            })
+        } else if (user) {
+            console.log(user)
+            CourseModel.find({subscribers}, (err,courses)=>{
+                res.status(200).json(courses)
+            })
         }
     })
-});
 
+})
 
 // -------CONNECTION TEST FUNCTION-------------
 const dbConnection = async() => {
@@ -156,7 +180,7 @@ function generateToken(username, password) {
 
 // METHOD TO GET USER FROM DB BY IT'S TOKEN
 function getUserByToken(UserModel, token){
-    UserModel.findOne({token}, (err, user)=>{
+    UserModel.findOne({token: token}, (err, user)=>{
         if(err){
             console.log('Error durante la query')
         } else if (!user){
