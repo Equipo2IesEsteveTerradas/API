@@ -144,12 +144,58 @@ app.get('/api/get_courses', (req, res)=>{
             })
         } else if (user) {
             console.log(user)
-            CourseModel.find({subscribers}, (err,courses)=>{
-                res.status(200).json(courses)
+            CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}]}, (err,courses)=>{
+                let response = []
+                courses.forEach(course => {
+                    response.push({
+                        courseID: course.id,
+                        title: course.title,
+                        description: course.description
+                    })
+                    res.status(200).json({
+                        status: 'OK',
+                        message: 'Cursos recuperados correctamente',                        
+                        course_list: response
+                    })
+                }); 
             })
         }
     })
+})
 
+// ---------------ENDPOINT GET COURSE DETAILS
+app.get('/api/get_course_details', (req, res)=>{
+    const idCourse = req.query.id
+    UserModel.findOne({token: session_token}, async(err, user)=>{
+        if(err){
+            console.log('Error')
+            res.status(404).json({
+                status: 'ERROR',
+                message: 'Error en la petición'
+            })
+        } else if(!session_token){
+            res.status(200).json({
+                status: "OK",
+                message: 'no existe token de sesion',
+                session_token: null
+            })
+        }else if(!user){
+            res.status(200).json({
+                status: "OK",
+                message: 'usuario no encontrado',
+                session_token: null
+            })
+        } else if (user) {
+            console.log(user)
+            CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}], _id: idCourse}, (err,courses)=>{
+                res.status(200).json({
+                    status: "OK",
+                    message: "Detalle del curso obtenido correctamente",
+                    course: courses
+                })
+            })
+        }
+    })
 })
 
 // -------CONNECTION TEST FUNCTION-------------
