@@ -14,6 +14,13 @@ const app = express();
 // Lectua y parseo del body
 app.use(express.json());
 
+// needed code 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 //GET
 app.get('/', (req,res) => {
     res.status(200).json({
