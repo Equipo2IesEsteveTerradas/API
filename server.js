@@ -11,6 +11,8 @@ const crypto = require('crypto');
 // Crear el servidor express
 const app = express();
 
+var courseTeachers = [];
+
 // Lectua y parseo del body
 app.use(express.json());
 
@@ -129,8 +131,9 @@ app.get('/api/logout', (req, res)=>{
 });
 
 // ---------------ENDPOINT GET_COURSES----------------
+
 app.get('/api/get_courses', (req, res)=>{
-    UserModel.findOne({token: session_token}, async(err, user)=>{
+    UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
             res.status(404).json({
@@ -153,11 +156,33 @@ app.get('/api/get_courses', (req, res)=>{
             console.log(user)
             CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}]}, (err,courses)=>{
                 let response = []
+                
                 courses.forEach(course => {
+                    course.subscribers.teachers.forEach(teacher =>{
+                        // console.log(teacher)
+                        // courseTeachers.push(teacher)
+                        UserModel.findOne({id: teacher}, (err, user)=>{
+                            if(err){
+                                console.log('Error')
+                                res.status(404).json({
+                                    status: 'ERROR',
+                                    message: 'Error en la petición'
+                                })
+                            }
+                            else if(user){
+                                console.log(user)
+                                courseTeachers.push(user.name)
+                                console.log(courseTeachers)
+                            }
+                        })
+                        
+                    })
+                    
                     response.push({
                         courseID: course.id,
                         title: course.title,
-                        description: course.description
+                        description: course.description,
+                        teachers: courseTeachers
                     })
                     res.status(200).json({
                         status: 'OK',
@@ -204,6 +229,8 @@ app.get('/api/get_course_details', (req, res)=>{
         }
     })
 })
+
+
 
 // -------CONNECTION TEST FUNCTION-------------
 const dbConnection = async() => {
