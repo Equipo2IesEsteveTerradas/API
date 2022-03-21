@@ -52,7 +52,7 @@ app.get('/api/login',(req,res) => {
         } else if (!user){
             console.log('usuario no encontrado')
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'usuario no encontrado',
                 session_token: null
             })
@@ -84,7 +84,7 @@ app.get('/api/login',(req,res) => {
             } else {
                 console.log('password incorrecto')
                 res.status(200).json({
-                    status: 'OK',
+                    status: 'ERROR',
                     message: 'contraseña incorrecta',
                     session_token: null
                 })
@@ -104,7 +104,7 @@ app.get('/api/logout', (req, res)=>{
             })
         } else if(!session_token){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'no existe token de sesion',
                 session_token: null
             })
@@ -120,7 +120,7 @@ app.get('/api/logout', (req, res)=>{
 
         } else if(!user){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'usuario no encontrado',
                 session_token: null
             })
@@ -139,13 +139,13 @@ app.get('/api/get_courses', (req, res)=>{
             })
         } else if(!session_token){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'no existe token de sesion',
                 session_token: null
             })
         }else if(!user){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'usuario no encontrado',
                 session_token: null
             })
@@ -182,13 +182,13 @@ app.get('/api/get_course_details', (req, res)=>{
             })
         } else if(!session_token){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'no existe token de sesion',
                 session_token: null
             })
         }else if(!user){
             res.status(200).json({
-                status: "OK",
+                status: "ERROR",
                 message: 'usuario no encontrado',
                 session_token: null
             })
