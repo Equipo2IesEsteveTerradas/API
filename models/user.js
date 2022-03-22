@@ -10,7 +10,8 @@ var UserSchema = new Schema({
     password: String,
     token: String,
     expiration_time: Date,
-    id: Number
+    id: Number,
+    admin: Boolean
 });
 
 module.exports = mongoose.model("users", UserSchema, "users");

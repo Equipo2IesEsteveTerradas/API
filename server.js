@@ -240,22 +240,53 @@ app.get('/api/get_course_details', (req, res)=>{
 
 // ---------------ENDPOINT EXPORT_DATABASE----------------
 app.get('/api/export_database', (req, res)=>{
-    CourseModel.find({}, (err, data)=>{
+    UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
             res.status(404).json({
                 status: 'ERROR',
                 message: 'Error en la petición'
             })
-        } else if(data){
+        } else if(!session_token){
             res.status(200).json({
-                status: "OK",
-                message: "Base de datos exportada correctamente",
-                data: data
+                status: "ERROR",
+                message: 'no existe token de sesion',
+                session_token: null
             })
+        }else if(!user){
+            res.status(200).json({
+                status: "ERROR",
+                message: 'usuario no encontrado',
+                session_token: null
+            })
+        } else if (user) {
+            if(user.admin){
+            
+                CourseModel.find({}, (err, data)=>{
+                    if(err){
+                        console.log('Error')
+                        res.status(404).json({
+                            status: 'ERROR',
+                            message: 'Error en la petición'
+                        })
+                    } else if(data){
+                        res.status(200).json({
+                            status: "OK",
+                            message: "Base de datos exportada correctamente",
+                            data: data
+                        })
+                    }
+                })
+            } else {
+                res.status(200).json({
+                    status: "ERROR",
+                    message: 'No tienes permisos para realizar esta acción'
+                })
+            }
         }
     })
 })
+
 
 // -------CONNECTION TEST FUNCTION-------------
 const dbConnection = async() => {
