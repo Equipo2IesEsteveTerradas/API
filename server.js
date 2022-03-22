@@ -158,28 +158,28 @@ app.get('/api/get_courses', (req, res)=>{
                 let response = []
                 console.log('1')
                 courses.forEach(course => {
-                    var courseTeachers = [];
                     
+                    var courseTeachers = [];
                     course.subscribers.teachers.forEach(teacher =>{
                         console.log(teacher)
                         courseTeachers.push(teacher)
                         
                         // console.log('2')
-                        // UserModel.findOne({id: teacher}, (err, user)=>{
-                        //     if(err){
-                        //         console.log('Error')
-                        //         res.status(404).json({
-                        //             status: 'ERROR',
-                        //             message: 'Error en la petición'
-                        //         })
-                        //     }
-                        //     else if(user){
-                        //         courseTeachers.push(user.name)
-                        //         console.log(courseTeachers)
-                        //         console.log('3')
+                        UserModel.findOne({id: teacher}, (err, user)=>{
+                            if(err){
+                                console.log('Error')
+                                res.status(404).json({
+                                    status: 'ERROR',
+                                    message: 'Error en la petición'
+                                })
+                            }
+                            else if(user){
+                                courseTeachers.push(user.name)
+                                console.log(courseTeachers)
+                                console.log('3')
                                 
-                        //     }
-                        // })
+                            }
+                        })
 
                     })
                     console.log('4')
@@ -190,12 +190,12 @@ app.get('/api/get_courses', (req, res)=>{
                         description: course.description,
                         teachers: courseTeachers
                     })
-                    res.status(200).json({
-                        status: 'OK',
-                        message: 'Cursos recuperados correctamente',                        
-                        course_list: response
-                    })
                 }); 
+                res.status(200).json({
+                    status: 'OK',
+                    message: 'Cursos recuperados correctamente',                        
+                    course_list: response
+                })
             })
         }
     })
