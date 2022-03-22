@@ -11,7 +11,7 @@ const crypto = require('crypto');
 // Crear el servidor express
 const app = express();
 
-var courseTeachers = [];
+
 
 // Lectua y parseo del body
 app.use(express.json());
@@ -154,30 +154,36 @@ app.get('/api/get_courses', (req, res)=>{
             })
         } else if (user) {
             console.log(user)
-            CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}]}, (err,courses)=>{
+            CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}]}, async (err,courses)=>{
                 let response = []
-                
+                console.log('1')
                 courses.forEach(course => {
-                    course.subscribers.teachers.forEach(teacher =>{
-                        // console.log(teacher)
-                        // courseTeachers.push(teacher)
-                        UserModel.findOne({id: teacher}, (err, user)=>{
-                            if(err){
-                                console.log('Error')
-                                res.status(404).json({
-                                    status: 'ERROR',
-                                    message: 'Error en la petición'
-                                })
-                            }
-                            else if(user){
-                                console.log(user)
-                                courseTeachers.push(user.name)
-                                console.log(courseTeachers)
-                            }
-                        })
-                        
-                    })
+                    var courseTeachers = [];
                     
+                    course.subscribers.teachers.forEach(teacher =>{
+                        console.log(teacher)
+                        courseTeachers.push(teacher)
+                        
+                        // console.log('2')
+                        // UserModel.findOne({id: teacher}, (err, user)=>{
+                        //     if(err){
+                        //         console.log('Error')
+                        //         res.status(404).json({
+                        //             status: 'ERROR',
+                        //             message: 'Error en la petición'
+                        //         })
+                        //     }
+                        //     else if(user){
+                        //         courseTeachers.push(user.name)
+                        //         console.log(courseTeachers)
+                        //         console.log('3')
+                                
+                        //     }
+                        // })
+
+                    })
+                    console.log('4')
+                    console.log(courseTeachers)
                     response.push({
                         courseID: course.id,
                         title: course.title,
