@@ -176,6 +176,7 @@ app.get('/api/get_courses', (req, res)=>{
                             else if(user){
                                 courseTeachers.push(user.name)
                                 console.log(courseTeachers)
+                                course.subscribers.teachers = courseTeachers
                                 console.log('3')
                                 
                             }
@@ -188,7 +189,7 @@ app.get('/api/get_courses', (req, res)=>{
                         courseID: course.id,
                         title: course.title,
                         description: course.description,
-                        teachers: courseTeachers
+                        teachers: course.subscribers.teachers
                     })
                 }); 
                 res.status(200).json({
@@ -226,6 +227,7 @@ app.get('/api/get_course_details', (req, res)=>{
         } else if (user) {
             console.log(user)
             CourseModel.find({$or: [{'subscribers.students': user.id}, {'subscribers.teachers': user.id}], _id: idCourse}, (err,courses)=>{
+                console.log(courses)
                 res.status(200).json({
                     status: "OK",
                     message: "Detalle del curso obtenido correctamente",
