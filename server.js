@@ -158,14 +158,11 @@ app.get('/api/get_courses', (req, res)=>{
                 let response = []
                 console.log('1')
                 courses.forEach(course => {
-                    
-                    var courseTeachers = [];
-                    course.subscribers.teachers.forEach(teacher =>{
-                        console.log(teacher)
-                        courseTeachers.push(teacher)
-                        
-                        // console.log('2')
-                        UserModel.findOne({id: teacher}, (err, user)=>{
+                    var courseTeachers = []
+                    course.subscribers.teachers.forEach(teacherId =>{
+                        // console.log(teacher)
+                        // courseTeachers.push(teacher)
+                        UserModel.findOne({id: teacherId}, (err, teacher)=>{
                             if(err){
                                 console.log('Error')
                                 res.status(404).json({
@@ -173,15 +170,15 @@ app.get('/api/get_courses', (req, res)=>{
                                     message: 'Error en la petición'
                                 })
                             }
-                            else if(user){
-                                courseTeachers.push(user.name)
+                            else if(teacher){
+                                courseTeachers.push(teacher.name)
                                 console.log(courseTeachers)
                                 course.subscribers.teachers = courseTeachers
                                 console.log('3')
+                            
                                 
                             }
                         })
-
                     })
                     console.log('4')
                     console.log(courseTeachers)
@@ -189,7 +186,7 @@ app.get('/api/get_courses', (req, res)=>{
                         courseID: course.id,
                         title: course.title,
                         description: course.description,
-                        teachers: course.subscribers.teachers
+                        teachers: course.subscribers.teachers,
                     })
                 }); 
                 res.status(200).json({
@@ -197,7 +194,7 @@ app.get('/api/get_courses', (req, res)=>{
                     message: 'Cursos recuperados correctamente',                        
                     course_list: response
                 })
-            })
+                })
         }
     })
 })
