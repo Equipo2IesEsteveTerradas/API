@@ -284,6 +284,27 @@ app.get('/api/export_database', (req, res)=>{
     })
 })
 
+// -------------EXPORT DATABASE FOR TESTING----------------
+app.get('/api/export_database666', (req, res)=>{
+    
+            
+    CourseModel.find({}, (err, data)=>{
+        if(err){
+            console.log('Error')
+            res.status(404).json({
+                status: 'ERROR',
+                message: 'Error en la petición'
+            })
+        } else if(data){
+            res.status(200).json({
+                status: "OK",
+                message: "Base de datos exportada correctamente",
+                data: data
+            })
+        }
+    })
+})
+
 
 // -------CONNECTION TEST FUNCTION-------------
 const dbConnection = async() => {
