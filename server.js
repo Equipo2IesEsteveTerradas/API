@@ -468,7 +468,7 @@ async function getEntryByPin(pinInput){
 // TODO start_vr_exercise
 app.get('/api/start_vr_exercise', async function(req, res) {
     // var pinInput = req.query.pin 
-    var pinInput = parseInt(req.body.PIN) 
+    var pinInput = parseInt(req.query.PIN) 
     var entry = await getEntryByPin(pinInput)
     var username;
     var vrTaskId;
@@ -516,15 +516,15 @@ async function getVrTaskById(vrTaskId){
 // TODO finish_vr_exercise
 app.post('/api/finish_vr_exercise', async function(req, res) {
     var student;
-    var inputPin = parseInt(req.body.PIN)
+    var inputPin = parseInt(req.body.PIN) || 0070
     var autograde = {
         passed_items: parseInt(req.body.autograde.passed_items),
         failed_items: parseInt(req.body.autograde.failed_items),
         score: parseInt(req.body.autograde.score),
         comments: "...to be decided"
     }
-    var VRexerciseID = parseInt(req.body.VRexerciseID)
-    var exerciseVersionID = parseInt(req.body.exerciseVersion)
+    var VRexerciseID = parseInt(req.body.VRexerciseID) || 5
+    var exerciseVersionID = parseInt(req.body.exerciseVersion) || 281
     var performance_data = {
         VRexID: parseInt(VRexerciseID),
         exerciseVersion: parseInt(exerciseVersionID),
