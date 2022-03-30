@@ -363,8 +363,10 @@ async function pinExists(actualPin){
 // TODO pin_request
 app.get('/api/pin_request', async function(req, res) {
     var user = await getUserByToken(session_token)
+    // var generatedPin = '0070'
+    // var vrTaskId = 5
     var generatedPin = generatePin()
-    var vrTaskId = req.query.vrTaskId || 753
+    var vrTaskId = req.query.VRtaskID
     var newPin = new PinModel({})
     if(!user){
         res.status(200).json({
@@ -377,9 +379,28 @@ app.get('/api/pin_request', async function(req, res) {
         newPin.exerciseId = vrTaskId
         console.log(newPin)
     }
+    var pinEntry = await getEntryByPin(generatedPin)
+
     while(await pinExists(generatedPin)){
-        console.log('pin existe')
-        generatedPin = generatePin()
+        if(pinEntry.userId == user.id && pinEntry.exerciseId == vrTaskId){
+            // console.log(getEntryByPin(generatedPin).userId)
+            // console.log(user.id)
+            // console.log(getEntryByPin(generatedPin).exerciseId)
+            // console.log(vrTaskId)
+            res.status(200).json({
+                status: "OK",
+                message: 'Este usuario ya tiene PIN para esta actividad',
+                pin: pinEntry.pinNumber
+            })
+            return
+        }else if (!(pinEntry.userId == user.id && pinEntry.exerciseId == vrTaskId)){
+            // console.log(getEntryByPin(generatedPin).userId)
+            // console.log(user.id)
+            // console.log(getEntryByPin(generatedPin).exerciseId)
+            // console.log(vrTaskId)
+            console.log('Este pin no corresponde a este usuario o ejercicio')
+            generatedPin = generatePin()
+        }
     }
     if(!await pinExists(generatedPin)){
         console.log('pin no existe')
