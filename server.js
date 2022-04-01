@@ -84,7 +84,8 @@ app.get('/api/login',(req,res) => {
             res.status(200).json({
                 status: 'OK',
                 message: 'login correcto',
-                session_token: user.token
+                session_token: user.token,
+                idUser: user.id
             })
             } else {
                 console.log('password incorrecto')
