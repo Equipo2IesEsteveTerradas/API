@@ -1,23 +1,40 @@
+//Lib
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 require('dotenv').config();
 const db = require('./database');
-const CourseModel = require('./models/course');
-const UserModel = require('./models/user');
-const PinModel = require('./models/pin');
+
 const crypto = require('crypto');
 const { application } = require('express');
 
 
 // Crear el servidor express
 const app = express();
+const router = express.Router();
+var cors = require('cors');
 
-
+// importar los modelos
+const CourseModel = require('./models/course');
+const UserModel = require('./models/user');
+const PinModel = require('./models/pin');
 
 
 // Lectua y parseo del body
+var bodyParser = require("body-parser");
+
+// set the work
 app.use(express.json());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // needed code 
 app.use(function(req, res, next) {
@@ -27,7 +44,7 @@ app.use(function(req, res, next) {
   });
 
 //GET
-app.get('/', (req,res) => {
+router.get('/', (req,res) => {
     res.status(200).json({
         status: 'OK',
         ok: true,
@@ -41,7 +58,7 @@ app.get('/', (req,res) => {
 var session_token; // variable para almacenar el token
 
 // ------------------- LOGIN ENDPOINT ----------------------
-app.get('/api/login',(req,res) => {
+router.get('/api/login',(req,res) => {
     
     let username=req.query.username
     let password=req.query.password
@@ -100,7 +117,7 @@ app.get('/api/login',(req,res) => {
 });
 
 // ----------------LOGOUT ENDPONT-----------------------------
-app.get('/api/logout', (req, res)=>{
+router.get('/api/logout', (req, res)=>{
     UserModel.findOne({token: session_token }, async function(err, user){
         if (err) {
             console.log('Error')
@@ -136,7 +153,7 @@ app.get('/api/logout', (req, res)=>{
 
 // ---------------ENDPOINT GET_COURSES----------------
 
-app.get('/api/get_courses', (req, res)=>{
+router.get('/api/get_courses', (req, res)=>{
     UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
@@ -204,7 +221,7 @@ app.get('/api/get_courses', (req, res)=>{
 })
 
 // ---------------ENDPOINT GET COURSE DETAILS
-app.get('/api/get_course_details', (req, res)=>{
+router.get('/api/get_course_details', (req, res)=>{
     const idCourse = req.query.id
     UserModel.findOne({token: session_token}, async(err, user)=>{
         if(err){
@@ -241,7 +258,7 @@ app.get('/api/get_course_details', (req, res)=>{
 
 // ---------------ENDPOINT EXPORT_DATABASE----------------
 // TODO comprobar user y password en lugar del token.
-app.get('/api/export_database', (req, res)=>{
+router.get('/api/export_database', (req, res)=>{
     UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
@@ -290,7 +307,7 @@ app.get('/api/export_database', (req, res)=>{
 })
 
 // -------------EXPORT DATABASE FOR TESTING----------------
-app.get('/api/export_database666', (req, res)=>{
+router.get('/api/export_database666', (req, res)=>{
     
             
     CourseModel.find({}, (err, data)=>{
@@ -362,7 +379,7 @@ async function pinExists(actualPin){
     })
 }
 // TODO pin_request
-app.get('/api/pin_request', async function(req, res) {
+router.get('/api/pin_request', async function(req, res) {
     var user = await getUserByToken(session_token)
     // var generatedPin = '0070'
     // var vrTaskId = 5
@@ -466,9 +483,9 @@ async function getEntryByPin(pinInput){
     })
 }
 
-// TODO start_vr_exercise
-app.get('/api/start_vr_exercise', async function(req, res) {
-    // var pinInput = req.query.pin 
+
+router.get('/api/start_vr_exercise', async function(req, res) {
+    
     var pinInput = parseInt(req.query.PIN) 
     var entry = await getEntryByPin(pinInput)
     var username;
@@ -515,7 +532,7 @@ async function getVrTaskById(vrTaskId){
 
 
 // TODO finish_vr_exercise
-app.post('/api/finish_vr_exercise', async function(req, res) {
+router.post('/api/finish_vr_exercise', async function(req, res) {
     var student;
     var inputPin = parseInt(req.body.PIN) || 0070
     var autograde = {
@@ -608,6 +625,8 @@ function generateToken(username, password) {
 }
 
 dbConnection();
+
+app.use("/", router);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
