@@ -44,21 +44,21 @@ app.use(function(req, res, next) {
   });
 
 //GET
-// router.get('/', (req,res) => {
-//     res.status(200).json({
-//         status: 'OK',
-//         ok: true,
-//         mensaje: 'Petición realizada correctamente',
-//         uid: 666
-//     })
-// });
+app.get('/', (req,res) => {
+    res.status(200).json({
+        status: 'OK',
+        ok: true,
+        mensaje: 'Petición realizada correctamente',
+        uid: 666
+    })
+});
 
 
 // TODO separar la logica del login&logout en un archivo aparte
 var session_token; // variable para almacenar el token
 
 // ------------------- LOGIN ENDPOINT ----------------------
-router.get('/api/login',(req,res) => {
+app.get('/api/login',(req,res) => {
     
     let username=req.query.username
     let password=req.query.password
@@ -117,7 +117,7 @@ router.get('/api/login',(req,res) => {
 });
 
 // ----------------LOGOUT ENDPONT-----------------------------
-router.get('/api/logout', (req, res)=>{
+app.get('/api/logout', (req, res)=>{
     UserModel.findOne({token: session_token }, async function(err, user){
         if (err) {
             console.log('Error')
@@ -153,7 +153,7 @@ router.get('/api/logout', (req, res)=>{
 
 // ---------------ENDPOINT GET_COURSES----------------
 
-router.get('/api/get_courses', (req, res)=>{
+app.get('/api/get_courses', (req, res)=>{
     UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
@@ -221,7 +221,7 @@ router.get('/api/get_courses', (req, res)=>{
 })
 
 // ---------------ENDPOINT GET COURSE DETAILS
-router.get('/api/get_course_details', (req, res)=>{
+app.get('/api/get_course_details', (req, res)=>{
     const idCourse = req.query.id
     UserModel.findOne({token: session_token}, async(err, user)=>{
         if(err){
@@ -258,7 +258,7 @@ router.get('/api/get_course_details', (req, res)=>{
 
 // ---------------ENDPOINT EXPORT_DATABASE----------------
 // TODO comprobar user y password en lugar del token.
-router.get('/api/export_database', (req, res)=>{
+app.get('/api/export_database', (req, res)=>{
     UserModel.findOne({token: session_token}, (err, user)=>{
         if(err){
             console.log('Error')
@@ -307,7 +307,7 @@ router.get('/api/export_database', (req, res)=>{
 })
 
 // -------------EXPORT DATABASE FOR TESTING----------------
-router.get('/api/export_database666', (req, res)=>{
+app.get('/api/export_database666', (req, res)=>{
     
             
     CourseModel.find({}, (err, data)=>{
@@ -379,7 +379,7 @@ async function pinExists(actualPin){
     })
 }
 // TODO pin_request
-router.get('/api/pin_request', async function(req, res) {
+app.get('/api/pin_request', async function(req, res) {
     var user = await getUserByToken(session_token)
     // var generatedPin = '0070'
     // var vrTaskId = 5
@@ -484,7 +484,7 @@ async function getEntryByPin(pinInput){
 }
 
 
-router.get('/api/start_vr_exercise', async function(req, res) {
+app.get('/api/start_vr_exercise', async function(req, res) {
     
     var pinInput = parseInt(req.query.PIN) 
     var entry = await getEntryByPin(pinInput)
@@ -532,7 +532,7 @@ async function getVrTaskById(vrTaskId){
 
 
 // TODO finish_vr_exercise
-router.post('/api/finish_vr_exercise', async function(req, res) {
+app.post('/api/finish_vr_exercise', async function(req, res) {
     var student;
     var inputPin = parseInt(req.body.PIN) || 0070
     var autograde = {
