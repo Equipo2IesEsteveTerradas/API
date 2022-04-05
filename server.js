@@ -44,14 +44,14 @@ app.use(function(req, res, next) {
   });
 
 //GET
-router.get('/', (req,res) => {
-    res.status(200).json({
-        status: 'OK',
-        ok: true,
-        mensaje: 'Petición realizada correctamente',
-        uid: 666
-    })
-});
+// router.get('/', (req,res) => {
+//     res.status(200).json({
+//         status: 'OK',
+//         ok: true,
+//         mensaje: 'Petición realizada correctamente',
+//         uid: 666
+//     })
+// });
 
 
 // TODO separar la logica del login&logout en un archivo aparte
