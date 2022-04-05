@@ -536,15 +536,15 @@ async function getVrTaskById(vrTaskId){
 // TODO finish_vr_exercise
 app.post('/api/finish_vr_exercise', async function(req, res) {
     var student;
-    var inputPin = parseInt(req.body.inputPin) || 0070
+    var inputPin = parseInt(req.body.inputPin)
     var autograde = {
         passed_items: parseInt(req.body.autograde.passed_items),
         failed_items: parseInt(req.body.autograde.failed_items),
         score: parseInt(req.body.autograde.score),
         comments: "...to be decided"
     }
-    var VRexerciseID = parseInt(req.body.VRexerciseID) || 5
-    var exerciseVersionID = parseInt(req.body.exerciseVersion) || 281
+    var VRexerciseID = parseInt(req.body.VRexerciseID) 
+    var exerciseVersionID = parseInt(req.body.exerciseVersion)
     var performance_data = {
         VRexID: parseInt(VRexerciseID),
         exerciseVersion: parseInt(exerciseVersionID),
@@ -577,9 +577,16 @@ app.post('/api/finish_vr_exercise', async function(req, res) {
                 message: "Ha ocurrido un error en la peticion"
             })
         }else if(updated){
+            console.log(updated)
             res.status(200).send({
                 status: 'OK',
                 message: "Los datos del ejercicio se han guardado correctamente"
+            })
+        }else if(updated.matchedCount === 0){
+            console.log(updated)
+            res.status(200).send({
+                status: 'ERROR',
+                message: "Ha ocurrido un error: Los datos del ejercicio no coinciden con el pin introducido"
             })
         }
     })
