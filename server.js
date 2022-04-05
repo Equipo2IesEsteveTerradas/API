@@ -626,7 +626,7 @@ function generateToken(username, password) {
 
 dbConnection();
 
-app.use("/", router);
+// app.use("/", router);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
