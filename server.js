@@ -6,7 +6,7 @@ require('dotenv').config();
 const db = require('./database');
 const cors = require('cors');
 const crypto = require('crypto');
-const { application } = require('express');
+// const { application } = require('express');
 
 
 // Crear el servidor express
@@ -35,8 +35,8 @@ app.use(cors());
 //     next();
 // });
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 // needed code 
 app.use(function(req, res, next) {
@@ -535,8 +535,10 @@ async function getVrTaskById(vrTaskId){
 
 // TODO finish_vr_exercise
 app.post('/api/finish_vr_exercise', async function(req, res) {
+    console.log("entra en POST")
     var student;
-    var inputPin = parseInt(req.body.PIN) || 0070
+    var inputPin = parseInt(req.body.inputPin) || 0070
+    console.log(req.body)
     var autograde = {
         passed_items: parseInt(req.body.autograde.passed_items),
         failed_items: parseInt(req.body.autograde.failed_items),
@@ -550,12 +552,19 @@ app.post('/api/finish_vr_exercise', async function(req, res) {
         exerciseVersion: parseInt(exerciseVersionID),
         position_data: {TODO: "complete"}
     }
+    console.log("antes de buscar reginstro por PIN")
     var entry = await getEntryByPin(inputPin)
+    console.log("Antes del primer if")
+    console.log(entry)
     if(entry===false){
+        console.log("no encuentra registro")
         return
     }else if(entry){
+        console.log("Encuentra registro")
         student = entry.userId;
+        console.log("guarda la variable student")
     }
+    console.log("Antes de generar la completion")
     var completion = {
         studentID: student,
         position_data: performance_data.position_data,
@@ -563,9 +572,11 @@ app.post('/api/finish_vr_exercise', async function(req, res) {
         grade: 9,
         feedback: "Sin querer has curado una trombosis. Buen trabajo"
     }
+    console.log("despues de crear la completion")
     
 
     CourseModel.updateOne({"vr_tasks.ID":entry.exerciseId},{$push: {"vr_tasks.$.completions": completion}}, (err, updated) => {
+
         if(err){
             res.status(500).send({
                 status: "ERROR",
