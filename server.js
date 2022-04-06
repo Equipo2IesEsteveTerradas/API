@@ -544,7 +544,7 @@ app.post('/api/finish_vr_exercise', async function(req, res) {
         comments: "...to be decided"
     }
     var VRexerciseID = parseInt(req.body.VRexerciseID) 
-    var exerciseVersionID = parseInt(req.body.exerciseVersion)
+    var exerciseVersionID = parseInt(req.body.exerciseVersion) || 1
     var performance_data = {
         VRexID: parseInt(VRexerciseID),
         exerciseVersion: parseInt(exerciseVersionID),
