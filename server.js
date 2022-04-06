@@ -534,7 +534,7 @@ async function getVrTaskById(vrTaskId){
 
 
 // TODO finish_vr_exercise
-app.post('/api/finish_vr_exercise', async function(req, res) {
+app.post('/api/finish_vr_exercise', cors(), async function(req, res) {
     var student;
     var inputPin = parseInt(req.body.inputPin)
     var autograde = {
