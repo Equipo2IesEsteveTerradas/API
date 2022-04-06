@@ -534,7 +534,7 @@ async function getVrTaskById(vrTaskId){
 
 
 // TODO finish_vr_exercise
-app.post('/api/finish_vr_exercise', cors(), async function(req, res) {
+app.post('/api/finish_vr_exercise', async function(req, res) {
     var student;
     var inputPin = parseInt(req.body.inputPin)
     var autograde = {
@@ -551,6 +551,7 @@ app.post('/api/finish_vr_exercise', cors(), async function(req, res) {
         position_data: {TODO: "complete"}
     }
     var entry = await getEntryByPin(inputPin)
+    console.log(autograde)
     if(entry===false){
         res.status(404).json({
             status: "ERROR",
